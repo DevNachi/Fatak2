@@ -59,6 +59,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -188,8 +189,9 @@ public class MainActivity extends AppCompatActivity implements UpateUi, WifiP2pM
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 505) {
-            File file = new File(data.getData().getPath());
-            Log.i(MainActivity.this.getLocalClassName(), data.getData().getPath());
+            assert data != null;
+            File file = new File(Objects.requireNonNull(Objects.requireNonNull(data.getData()).getPath()));
+            Log.i(MainActivity.this.getLocalClassName(), Objects.requireNonNull(data.getData().getPath()));
             Log.i(MainActivity.this.getLocalClassName(), file.getName());
 
         }
@@ -209,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements UpateUi, WifiP2pM
 
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-        InetAddress ownerAddress = wifiP2pInfo.groupOwnerAddress;
         Log.i(TAG, "" + wifiP2pInfo.groupOwnerAddress.getHostAddress());
         if (wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner) {
             Log.i(TAG, "Owner");
@@ -330,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements UpateUi, WifiP2pM
     // toggle wifi hotspot on or off
     public static void configApState(Context context) {
         WifiManager wifimanager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
-        WifiConfiguration wificonfiguration = null;
         try {
             // if WiFi is on, turn it on
             if(isApOn(context)) {
@@ -339,13 +339,14 @@ public class MainActivity extends AppCompatActivity implements UpateUi, WifiP2pM
             }
             assert wifimanager != null;
             Method method = wifimanager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-            method.invoke(wifimanager, wificonfiguration, !isApOn(context));
+            method.invoke(wifimanager, null, !isApOn(context));
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    //
     public class ServerClass extends Thread {
         ServerSocket serverSocket;
         Socket socket;
@@ -408,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements UpateUi, WifiP2pM
                 for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
+                        return inetAddress.getHostAddress();
                     }
                 }
             }
