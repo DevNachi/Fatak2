@@ -36,10 +36,11 @@ dependencies {
     //animation lib
     implementation 'com.airbnb.android:lottie:3.4.1'
     //qrcodeGen
-    implementation 'com.google.zxing:core:3.2.1'
+    implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     implementation 'me.dm7.barcodescanner:zxing:1.9.13'
     implementation 'com.karumi:dexter:5.0.0'
-
+    //file picker
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
 
 }
